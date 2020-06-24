@@ -1,12 +1,11 @@
-FROM ubuntu:latest
+FROM iofq/docker-unbound:latest
 
-ENV DEBIAN_FRONTEND=noninteractive 
+RUN apk update && apk add --no-cache python3 py3-pip bind-tools && \
+  pip3 install --upgrade pip && \
+  pip3 install praw 
 
-RUN apt update && apt install -y python3 python3-pip
-RUN apt install -y dnsutils
-RUN pip3 install praw
+WORKDIR /run/python
+COPY bot.py entrypoint.sh .
 
-WORKDIR /tmp/python
-
-ENTRYPOINT ["/bin/python3"]
-CMD ["reddit.py"]
+ENTRYPOINT ["/bin/sh"]
+CMD ["entrypoint.sh"]
